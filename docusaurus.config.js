@@ -120,6 +120,11 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} Intuita`,
       },
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: true,
+        respectPrefersColorScheme: true,
+      },
       prism: {
         //theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
