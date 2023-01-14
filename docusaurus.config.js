@@ -47,7 +47,7 @@ const config = {
             'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/custom-dev.css'),
         },
       }),
     ],
@@ -119,12 +119,39 @@ const config = {
               },
             ],
           },
+          {
+            title: 'Company',
+            items: [
+              {
+                label: 'Privacy Policy',
+                to: '/privacy-policy',
+              },
+            ],
+          },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Intuita`,
       },
       prism: {
-        theme: lightCodeTheme,
+        //theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        theme: require('prism-react-renderer/themes/dracula'),
+        magicComments: [
+          {
+            className: 'theme-code-block-highlighted-line',
+            line: 'highlight-next-line',
+            block: {start: 'highlight-start', end: 'highlight-end'},
+          },
+          {
+            className: 'code-block-red-line',
+            line: 'red line',
+            block: {start: 'red start', end: 'red end'},
+          },
+          {
+            className: 'code-block-green-line',
+            line: 'green line',
+            block: {start: 'green start', end: 'green end'},
+          },
+        ],
       },
     }),
 };
