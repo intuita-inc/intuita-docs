@@ -9,9 +9,9 @@ const config = {
   title: 'Intuita Docs',
   tagline: 'Upgrade dependencies faster with high-quality codemods.',
   url: 'https://intutia.io',
-  baseUrl: '/',
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  baseUrl: "/docs/",
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "warn",
   favicon: 'img/favicon.ico',
 
   // GitHub pages deployment config.
@@ -105,6 +105,15 @@ const config = {
               {
                 label: 'Blog',
                 to: '/blog',
+              },
+            ],
+          },
+          {
+            title: 'Company',
+            items: [
+              {
+                label: 'Privacy Policy',
+                to: '/legal/privacy-policy',
               },
             ],
           },
