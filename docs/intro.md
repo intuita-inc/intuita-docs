@@ -51,8 +51,8 @@ Open package.json in your project & applicable upgrade codemods automatically sh
 <ThemedImage
   alt="Touca server signup page"
   sources={{
-    light: useBaseUrl("/img/intro/execute-next-codemods.png"),
-    dark: useBaseUrl("/img/intro/execute-next-codemods.png")
+    light: useBaseUrl("img/intro/execute-next-codemods.png"),
+    dark: useBaseUrl("img/intro/execute-next-codemods.png")
   }}
 />
 
@@ -66,8 +66,8 @@ Open package.json in your project & applicable upgrade codemods automatically sh
 <ThemedImage
   alt="Touca server signup page"
   sources={{
-    light: useBaseUrl("/img/intro/execute-codemods.png"),
-    dark: useBaseUrl("/img/intro/execute-codemods.png")
+    light: useBaseUrl("img/intro/execute-codemods.png"),
+    dark: useBaseUrl("img/intro/execute-codemods.png")
   }}
 />
 
@@ -138,8 +138,8 @@ Alternatively, you can approve all types of changes by clicking on the change ty
 <ThemedImage
   alt="Touca server signup page"
   sources={{
-    light: useBaseUrl("/img/intro/approve-changes.png"),
-    dark: useBaseUrl("/img/intro/approve-changes.png")
+    light: useBaseUrl("img/intro/approve-changes.png"),
+    dark: useBaseUrl("img/intro/approve-changes.png")
   }}
 />
 
