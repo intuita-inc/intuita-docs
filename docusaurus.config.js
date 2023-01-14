@@ -108,15 +108,6 @@ const config = {
               },
             ],
           },
-          {
-            title: 'Company',
-            items: [
-              {
-                label: 'Privacy Policy',
-                to: 'docs/legal/privacy-policy',
-              },
-            ],
-          },
         ],
         copyright: `Copyright © ${new Date().getFullYear()} Intuita`,
       },
