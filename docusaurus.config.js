@@ -9,7 +9,7 @@ const config = {
   title: 'Intuita Docs',
   tagline: 'Upgrade dependencies faster with high-quality codemods.',
   url: 'https://intutia.io',
-  baseUrl: "/docs/",
+  baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: 'img/favicon.ico',
@@ -113,7 +113,7 @@ const config = {
             items: [
               {
                 label: 'Privacy Policy',
-                to: '/legal/privacy-policy',
+                to: 'docs/legal/privacy-policy',
               },
             ],
           },
