@@ -113,7 +113,7 @@ const config = {
             items: [
               {
                 label: 'Privacy Policy',
-                to: 'docs/legal/privacy-policy',
+                to: 'docs/about-intuita/legal/privacy-policy',
               },
             ],
           },
