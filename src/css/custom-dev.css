@@ -118,3 +118,33 @@ div[role="tabpanel"] {
   padding: 0 var(--ifm-pre-padding);
   border-left: 3px solid #1fb90044;
 }
+
+.gradient-text {
+  background: linear-gradient(to right, #f32170, #ff6b08, #cf23cf, #eedd44);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+}
+
+.gradient-text-intuita {
+  background: linear-gradient(to right, #4695b6, #c1361d, #f2b221);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+}
+
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 15px;
+  max-width: 100%;
+}
+
+.flex-column {
+  flex: 35%;
+}
+
+
+@media screen and (max-width: 900px) {
+  .flex-column {
+    width: 100%;
+  }
+}
