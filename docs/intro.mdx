@@ -1,0 +1,109 @@
+---
+sidebar_position: 1
+title: "Welcome"
+hide_title: true
+---
+
+import ThemedImage from "@theme/ThemedImage";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+<p align="center">
+  <a href="https://intuita.io">
+    <img src="/img/intuita-logo.png" height="100" alt="Intuita logo" />
+  </a>
+</p>
+<h1 align="center" class="gradient-text-intuita">INTUITA</h1>
+<h2 align="center">Fear of dependency upgrades is a thing of the past. <br/>Migrate your code, upgrade dependencies, & refactor old code at <i class="gradient-text">lightspeed</i>.</h2>
+
+Intuita is a codemod manager 🤖 that makes migrations, dependency upgrades & large refactorings faster & easier for codebases of any size. [Get started →](getting-started/getting-started-overview)
+
+## Awesome codemods delivered to you!
+
+
+
+Intuita's extension is open source & supports the best codemod engines out there, such as Facebook's JSCodeShift, Uber's Piranha, & soon ML-powered engines.
+
+> We're constantly supporting new amazing codemods ([check our list of currently supported codemods](contributing/roadmap#currently-supported)).<br />
+> If your favorite codemod engine is not supported yet, please [create an issue](https://github.com/intuita-inc/intuita-vscode-extension/issues/new) for us to prioritize.
+
+
+:::note
+
+This extension is in Public Beta! [Get in touch](https://join.slack.com/t/intuita-inc/shared_invite/zt-1bjj5exxi-95yPfWi71HcO2p_sS5L2wA) if you are planning to use this extension for large upgrades & you have some feature requests!
+
+:::
+
+
+## How It Works 🪄
+
+
+Intuita's is a powerful codemod manager that supports many popular codemods.
+
+How does it do it, you might ask.
+
+Intuita works through a powerful engine that is able to run a codemod for your desired package, and scan your codebase for needed refactors to migrate to the new version of the package in a breeze.
+
+Let's say for example your codebase depends on NextJS v12, and you want to upgrade to NextJS v13. However, there are some changes you'd need to do in all your codebase, causing so much wasted time, making you give up the benefits that would come with new versions and have potential critical security vulnerabilities in your codebase.
+
+<ThemedImage
+  alt="Touca server signup page"
+  sources={{
+    light: useBaseUrl("img/intro/dependency-needs-refactor-light.png"),
+    dark: useBaseUrl("img/intro/dependency-needs-refactor-dark.png")
+  }}
+/>
+
+With that being said, Intuita is able to run needed codemods to let you solve this issue in seconds (literally). 
+
+By running Intuita, the extension will scan your codebase and do all the behind-the-scenes complex logic to migrate your codebase and make it operational with the new dependency version.
+
+
+
+<div class="flex-row">
+
+<div class="flex-column">
+
+```jsx  title="Before Change"
+export default function NavBack({ text, url }) {
+  return (
+    // red start
+    <Link href={url}>
+      <a className={styles.navBack}>
+        // red end
+        <img src={ArrowLeft} />
+        {text}
+        // red start
+      </a>
+    </Link>
+  )
+  // red end
+}
+```
+
+</div>
+
+<div class="flex-column">
+
+```jsx  title="After Change"
+export default function NavBack({ text, url }) {
+  return (
+    // green start
+    (<Link href={url} className={styles.navBack}>
+    //green end
+      <img src={ArrowLeft} />
+      {text}
+      // green start
+    </Link>)
+  );
+  // green end
+}
+```
+
+</div>
+</div>
+
+
+🪄 Magic, right?
