@@ -148,3 +148,13 @@ div[role="tabpanel"] {
     width: 100%;
   }
 }
+
+
+.max-width-300 {
+  max-width: 300px;
+}
+
+
+.inverted-grey {
+  -webkit-filter: invert(89.5%) !important
+}
