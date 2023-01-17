@@ -154,6 +154,9 @@ div[role="tabpanel"] {
   max-width: 300px;
 }
 
+.max-width-400 {
+  max-width: 400px;
+}
 
 .inverted-grey {
   -webkit-filter: invert(89.5%) !important
