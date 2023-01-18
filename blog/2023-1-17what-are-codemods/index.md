@@ -6,7 +6,7 @@ tags: [codemods, tutorial, beginner]
 image: ./what-are-codemods-header.png
 ---
 
-![Docusaurus Plushie](./what-are-codemods-header.png)
+![What Are Codemods](./what-are-codemods-header.png)
 
 # What Are Codemods? - Deciphered
 
@@ -55,7 +55,7 @@ So what's the solution? 😞
 
 ## Enter, Codemods! 🥳
 
-Before you start chugging gallons of coffee ☕ and bashing on your keyboard ⌨️, wasting all those previous hours, you hear about codemods. Suddenly the light comes back into your life. 🌟
+Before you start chugging gallons of coffee ☕ and bashing on your keyboard ⌨️, wasting all those precious hours, you hear about codemods. Suddenly the light comes back into your life. 🌟
 
 Codemods - shorthand for code modifications - are cool programs that can help you automate all the tedious work of modifying your code to do all the needed changes to re-structure it for a dependency change. Codemods easily allow your current codebases to be *transformed* automatically and migrate from one structure to another that allows it to work after needed dependency changes.
 
@@ -70,10 +70,6 @@ Well, this sounds a bit overwhealming, but all of this is just a fancy way of sa
 <p align="left" class="inverted-grey"><img width="400" src="/img/twilio-ast-tokenization.gif" alt="tokenization" /></p>
 2. Uses those tiny pieces to create a tree that resembles how your code looks like in a complete structural point of view.
 <p align="left" class="inverted-grey"><img width="400" src="/img/twilio-ast-parsing.gif" alt="parsing" /></p>
-3. Finally uses that tree to manipulate the code & doing all the needed fixes then creating new code off of that tree.
-<p align="left" class="inverted-grey"><img width="400" src="/img/twilio-ast-code-generation.gif" alt="code generation" /></p>
-
-Leaving you with refactored & working code in no time, Voila! 🪄 
 
 <p class="max-width-400">
 
@@ -114,6 +110,13 @@ Leaving you with refactored & working code in no time, Voila! 🪄
 ```
 
 </p>
+
+3. Finally uses that tree to manipulate the code & doing all the needed fixes then creating new code off of that tree.
+<p align="left" class="inverted-grey"><img width="400" src="/img/twilio-ast-code-generation.gif" alt="code generation" /></p>
+
+Leaving you with refactored & working code in no time, Voila! 🪄 
+
+
 
 
 
