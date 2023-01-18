@@ -89,10 +89,6 @@ const config = {
                 to: 'docs/category/guides',
               },
               {
-                label: 'Resources',
-                to: 'docs/category/resources',
-              },
-              {
                 label: 'Contributing',
                 to: 'docs/category/contributing',
               },
