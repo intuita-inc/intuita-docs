@@ -78,27 +78,27 @@ const config = {
             items: [
               {
                 label: 'Welcome',
-                to: '/docs/intro',
+                to: 'docs/intro',
               },
               {
                 label: 'Getting Started',
-                to: '/docs/category/getting-started',
+                to: 'docs/category/getting-started',
               },
               {
                 label: 'Guides',
-                to: '/docs/category/guides',
+                to: 'docs/category/guides',
               },
               {
                 label: 'Resources',
-                to: '/docs/category/resources',
+                to: 'docs/category/resources',
               },
               {
                 label: 'Contributing',
-                to: '/docs/category/contributing',
+                to: 'docs/category/contributing',
               },
               {
                 label: 'About',
-                to: '/docs/category/about-intuita',
+                to: 'docs/category/about-intuita',
               },
             ],
           },
