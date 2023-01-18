@@ -77,8 +77,28 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
+                label: 'Welcome',
                 to: '/docs/intro',
+              },
+              {
+                label: 'Getting Started',
+                to: '/docs/category/getting-started',
+              },
+              {
+                label: 'Guides',
+                to: '/docs/category/guides',
+              },
+              {
+                label: 'Resources',
+                to: '/docs/category/resources',
+              },
+              {
+                label: 'Contributing',
+                to: '/docs/category/contributing',
+              },
+              {
+                label: 'About',
+                to: '/docs/category/about-intuita',
               },
             ],
           },
@@ -114,6 +134,14 @@ const config = {
               {
                 label: 'Privacy Policy',
                 to: 'docs/about-intuita/legal/privacy-policy',
+              },
+              {
+                label: 'Terms & Conditions',
+                to: 'docs/about-intuita/legal/terms-and-conditions',
+              },
+              {
+                label: 'Telemetry Compliance',
+                to: 'docs/about-intuita/legal/telemetry-compliance',
               },
             ],
           },
