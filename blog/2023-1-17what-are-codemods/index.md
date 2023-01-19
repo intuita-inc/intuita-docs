@@ -76,60 +76,12 @@ Well, this sounds a bit overwhelming, but all of this is just a fancy way of say
 <p align="left" class="inverted-grey"><img width="400" src="/img/twilio-ast-tokenization.gif" alt="tokenization" /></p>
 2. Uses those tiny pieces to create a tree that resembles how your code looks like in a complete structural point of view.
 <p align="left" class="inverted-grey"><img width="400" src="/img/twilio-ast-parsing.gif" alt="parsing" /></p>
-
-<p class="max-width-400">
-
-```json
-{
- "type": "Program",
- "start": 0,
- "end": 14,
- "body": [
-   {
-     "type": "ExpressionStatement",
-     "start": 0,
-     "end": 14,
-     "expression": {
-       "type": "CallExpression",
-       "start": 0,
-       "end": 13,
-       "callee": {
-         "type": "Identifier",
-         "start": 0,
-         "end": 7,
-         "name": "isPanda"
-       },
-       "arguments": [
-         {
-           "type": "Literal",
-           "start": 8,
-           "end": 12,
-           "value": "🐼",
-           "raw": "'🐼'"
-         }
-       ]
-     }
-   }
- ],
- "sourceType": "module"
-}
-```
-
-</p>
-
 3. Finally uses that tree to manipulate the code & doing all the needed fixes then creating new code off of that tree.
 <p align="left" class="inverted-grey"><img width="400" src="/img/twilio-ast-code-generation.gif" alt="code generation" /></p>
 
 Leaving you with refactored & working code in no time, Voila! 🪄 
 
-
-
-
-
-
-
 All in all, codemods use tokenize your code, built ASTs with those tokens, then manipulate those ASTs based on given rules, and give you a migrated new fresh working code. ✨
-
 
 <div class="flex-row">
 
@@ -160,6 +112,36 @@ function hello(){
 
 </div>
 </div>
+
+
+## Methods of Codemods Generation
+
+There are 3 methods of codemod generation you can go about.
+
+1. Imperative-Based Codemod Engines
+2. Declarative/Pattern-Based Codemod Engines
+3. LLM-Based (Large Language Models) Codemod Engines
+
+
+### Imperative-Based Codemod Engines
+This type of codemod generation is very powerful & enables the codemod author to tailor the codemod for many types of complex ode transformations. However, imperative-based codemod generation requires deep understanding of ASTs & their manipulation techniques.
+
+An example of this method is using [ASTExplorer](https://astexplorer.net/) to manually inspect the AST, select nodes, filter nodes, modify them, & create a code transformation.
+
+
+### Declarative/Pattern-Based Codemod Engines
+These types of codemod engines are much easier to use compared to imperative-based engines. Declarative-based engines rely mainly on input/output states of code that allow the declarative engine to find specific patterns that allow for such a code transformation between both states.
+
+Declarative-based codemod engines hide much of the underlying implementation details, allowing a much more human-understandable method of codemod generation. However, declerative codemod engines still rely on ASTs for code transformations and are limited to supporting changes only when atomic tranformations are already built.
+
+An examples of a declarative codemod engine is [JARVIS](https://rajasegar.github.io/jarvis/).
+
+### LLM-Based (Large Language Models) Codemod Engines
+LLM-based codemod engines allow codemod generation to be a data-driven process of providing examples of before & after code states. LLM technologies are leveraged to learn from the given code state examples, where the models form a general understanding of how such state transformations can occur.
+
+These codemod engines skip the use of ASTs to develop transformations, and rather work by a direct code-to-code transformation.
+
+However, such models are rarely suitable for any complex tranformations, and are rather used only for simple transformations. To add, human review is needed to ensure that the code transformation is accurate.
 
 ## Learn How to Write Your First Codemod
 
