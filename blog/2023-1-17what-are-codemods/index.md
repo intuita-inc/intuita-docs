@@ -153,7 +153,7 @@ These codemod engines skip the use of ASTs to develop transformations, and rathe
 
 However, such models are rarely suitable for any complex tranformations, and are rather used only for simple transformations. To add, human review is needed to ensure that the code transformation is accurate. 
 
-Despite this, LLM-based codemod are getting increasingly smarter over time. Currently, there are extremely promising results that illustrate great efficacy of using LLMs in simple code transformations
+Despite this, LLM-based codemod are getting increasingly smarter over time. Currently, there are extremely promising results that illustrate great efficacy of using LLMs in simple code transformations.
 
 ## Learn How to Write Your First Codemod
 
