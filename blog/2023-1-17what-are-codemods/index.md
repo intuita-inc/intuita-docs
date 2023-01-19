@@ -8,7 +8,18 @@ image: ./what-are-codemods-header.png
 
 ![What Are Codemods](./what-are-codemods-header.png)
 
-# What Are Codemods? - Deciphered
+You're upgrading dependency for a project, however, this upgrade needs unfathomable modification and refactoring?
+
+In this article we go over:
+- How codebase migrations can be problematic?
+- What are codemods and how do they solve this issue?
+- How do codemods work?
+- Types of codemods.
+- References for getting started with your first codemod!
+
+<!--truncate-->
+
+---
 
 
 So you're working on a project, and for some reason, you need to upgrade/change a dependency. But by doing so, you realize that you have a lot of rework and refactoring to do in your codebase.
@@ -19,7 +30,6 @@ Let alone that this will most probably happen again when another dependency usag
 
 Huge inconvenience! Certainly, the amazing coders out there won't leave us in the open without a solution to this, right? Fear no more.
 
-<!--truncate-->
 
 
 ## I'll Find & Replace, What's the Issue? 😎 (Hint: A Lot!)
@@ -118,30 +128,32 @@ function hello(){
 
 There are 3 methods of codemod generation you can go about.
 
-1. Imperative-Based Codemod Engines
-2. Declarative/Pattern-Based Codemod Engines
-3. LLM-Based (Large Language Models) Codemod Engines
+1. Imperative-Based Codemods
+2. Declarative/Pattern-Based Codemods
+3. LLM-Based (Large Language Models) Codemods
 
 
 ### Imperative-Based Codemod Engines
-This type of codemod generation is very powerful & enables the codemod author to tailor the codemod for many types of complex ode transformations. However, imperative-based codemod generation requires deep understanding of ASTs & their manipulation techniques.
+This type of codemod generation is very powerful & enables the codemod author to tailor the codemod for many types of complex code transformations. However, imperative-based codemod generation requires deep understanding of ASTs & their manipulation techniques.
 
 An example of this method is using [ASTExplorer](https://astexplorer.net/) to manually inspect the AST, select nodes, filter nodes, modify them, & create a code transformation.
 
 
 ### Declarative/Pattern-Based Codemod Engines
-These types of codemod engines are much easier to use compared to imperative-based engines. Declarative-based engines rely mainly on input/output states of code that allow the declarative engine to find specific patterns that allow for such a code transformation between both states.
+These types of codemod engines are much easier to use compared to imperative-based engines. Declarative-based engines rely mainly on input/output states of code that allow the declarative engine to find specific patterns of code transformation between both states.
 
 Declarative-based codemod engines hide much of the underlying implementation details, allowing a much more human-understandable method of codemod generation. However, declerative codemod engines still rely on ASTs for code transformations and are limited to supporting changes only when atomic tranformations are already built.
 
 An examples of a declarative codemod engine is [JARVIS](https://rajasegar.github.io/jarvis/).
 
 ### LLM-Based (Large Language Models) Codemod Engines
-LLM-based codemod engines allow codemod generation to be a data-driven process of providing examples of before & after code states. LLM technologies are leveraged to learn from the given code state examples, where the models form a general understanding of how such state transformations can occur.
+LLM-based codemod engines allow codemod generation to be a data-driven process of providing examples of before & after code states.
 
 These codemod engines skip the use of ASTs to develop transformations, and rather work by a direct code-to-code transformation.
 
-However, such models are rarely suitable for any complex tranformations, and are rather used only for simple transformations. To add, human review is needed to ensure that the code transformation is accurate.
+However, such models are rarely suitable for any complex tranformations, and are rather used only for simple transformations. To add, human review is needed to ensure that the code transformation is accurate. 
+
+Despite this, LLM-based codemod are getting increasingly smarter over time. Currently, there are extremely promising results that illustrate great efficacy of using LLMs in simple code transformations
 
 ## Learn How to Write Your First Codemod
 
