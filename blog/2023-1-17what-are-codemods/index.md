@@ -61,7 +61,9 @@ So what's the solution? 😞
 
 Before you start chugging gallons of coffee ☕ and bashing on your keyboard ⌨️, wasting all those precious hours, you hear about codemods. Suddenly the light comes back into your life. 🌟
 
-Codemods, short for code modifications, are cool apps that automate the tedious work of re-structuring your code for something like a dependency change by automatically converting and migrating your codebases easily.
+Codemods, short for code modifications, is a term first coined by facebook for tools/libraries for large-scale codebase refactors.
+
+Codemods automate the tedious work of re-structuring your code for something like a dependency change by automatically converting and migrating your codebases easily.
 
 Codemods leverage (very) mature analysis and structuring techniques to build new cutting-edge workflow efficiency scripts.
 
