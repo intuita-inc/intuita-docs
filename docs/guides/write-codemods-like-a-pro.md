@@ -18,17 +18,17 @@ We will showcase a codemod that you would see in the wild in a popular open-sour
 
 We suggest you follow this tutorial using [ASTExplorer](https://astexplorer.net/) w/ JSCodeShift.
 
-If you prefer testing on your local development environment, check our guide for [configuring your local environment for codemod development](/docs/).
+If you prefer testing on your local development environment, check our guide for [configuring your local environment for codemod development](#).
 
 ---
 
 ## Prerequisites
 
 ### Understanding ASTs
-This tutorial requires understanding of Abstract Syntax Trees (ASTs). You should be able to inspect, traverse, & manipulate ASTs. If you're not familiar with ASTs, make sure to check out [our guide on understanding ASTs first](/docs/).
+This tutorial requires understanding of Abstract Syntax Trees (ASTs). You should be able to inspect, traverse, & manipulate ASTs. If you're not familiar with ASTs, make sure to check out [our guide on understanding ASTs first](#).
 
 ### Writing simple codemods
-Before getting into this tutorial, make sure you're familiar with writing simple codemods. If you're not, make sure to go over [our tutorial for writing your first codemod](/docs/), first.
+Before getting into this tutorial, make sure you're familiar with writing simple codemods. If you're not, make sure to go over [our tutorial for writing your first codemod](#), first.
 
 ---
 
