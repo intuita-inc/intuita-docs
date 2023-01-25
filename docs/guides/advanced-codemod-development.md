@@ -524,4 +524,4 @@ for (const x in text) {
 ### Next Steps
 After taking your first steps with writing your first codemod that solves a real-world problem, now you're ready to start taking your development process to the next level.
 
-In the upcoming tutorial, we will cover integrating declarative codemod engines (like [JARVIS](https://rajasegar.github.io/jarvis/)) into your workflow, making you a much more efficient codemod developer. [Let's get started!](/docs/guides/declarative-codemod-engines)
+In the upcoming tutorial, we will cover integrating declarative codemod engines (like [JARVIS](https://rajasegar.github.io/jarvis/)) into your workflow, making you a much more efficient codemod developer. [Let's get started!](././docs/guides/declarative-codemod-engines)

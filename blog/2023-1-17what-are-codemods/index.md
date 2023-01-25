@@ -157,7 +157,7 @@ Despite this, LLM-based codemod are getting increasingly smarter over time. Curr
 
 ## Learn How to Write Your First Codemod
 
-Check out our guide here to ***[learn how to write your first codemod](/docs/guides/write-codemods-like-a-pro)***!
+Check out our guide here to ***[learn how to write your first codemod](/docs/guides/advanced-codemod-development)***!
 
 
 ## Share Your Codemods With The Amazing Community 👩🏽‍💻🌎
