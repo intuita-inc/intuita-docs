@@ -5,20 +5,30 @@ sidebar_position: 1
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Write Codemods Like a Pro
+# Advanced Codemod Development
 
-This document will guide you through the thought framework of getting started to write codemods like a pro.
-
-
-## Overview
+Coding codemods with imperative methods and engines (like JSCodeShift for JS/TS) can be extremely powerful for code refactors. However, such codemods can be difficult to create, especially by a starter codemod developer.
 
 In this tutorial, we start taking the first steps towards writing codemods that solve real problems.
 
-We will showcase a codemod that you would see in the wild in a popular open-source project, go over how this codemod was built, and the thought process of a codemod developer.
+## Overview
 
-We suggest you follow this tutorial using [ASTExplorer](https://astexplorer.net/) w/ JSCodeShift.
+Throughout this document, we will break down some of the thought process that our friend and codemod guru [Raja](https://github.com/rajasegar) uses to make useful codemods.
 
-If you prefer testing on your local development environment, check our guide for [configuring your local environment for codemod development](#).
+By the end of this tutorial you will learn:
+
+- How to start tackling codemod development like an expert.
+- How to write a codemod that solves a real-world problem.
+- Usage of more advanced AST manipulation techniques.
+- About new methods and tools that make your codemod development more efficient.
+
+Lets learn by example together!
+
+:::tip
+
+*We suggest you follow this tutorial using [ASTExplorer](https://astexplorer.net/) w/ JSCodeShift.*
+
+:::
 
 ---
 
@@ -460,9 +470,11 @@ Then, we check if the `var` declaration is within either:
       })
     ) {
         // In either one of the previous cases, we fall back to using let instead of const
+        // This transforms the declaration type to let
       declaration.value.kind = 'let';
     } else {
         // Else, var is safe to be converted to const
+        // This transforms the declaration type to const
       declaration.value.kind = 'const';
     }
   }).size() !== 0;
@@ -472,8 +484,10 @@ In the case of (1) the variable being mutated or (2) the declarator not being in
 
 Otherwise, we can safely replace `var` with `const`.
 
-#### Applying the Transform
-Finally, we replace the AST with the manipulated AST.
+> Note here that while making this codemod, we should always consider having fallbacks for undesirable cases. The codemod developer here chose `let` as a fallback when `const` is not applicable, rather than keeping the declaration as `var`, as the use of `let` is arguably better.
+
+#### Returning the Manipulated AST
+Finally, we replace the source AST with the manipulated AST after applying our transforms.
 
 ```js
 return updatedAnything ? root.toSource() : null;
@@ -505,3 +519,9 @@ for (const x in text) {
 - Always make sure you aren't making wishful assumptions in your codemod cases.
 - Design fallbacks for undesired scenarios within your codemods.
 - And most importantly, get active within the codemod community! At Intuita, we're keen on building a [community haven for all the codemod enthusiasts out there](https://github.com/intuita-inc).
+
+
+### Next Steps
+After taking your first steps with writing your first codemod that solves a real-world problem, now you're ready to start taking your development process to the next level.
+
+In the upcoming tutorial, we will cover integrating declarative codemod engines (like [JARVIS](https://rajasegar.github.io/jarvis/)) into your workflow, making you a much more efficient codemod developer. [Let's get started!](/docs/guides/declarative-codemod-engines)
