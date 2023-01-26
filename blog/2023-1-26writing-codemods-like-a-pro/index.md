@@ -1,5 +1,8 @@
 ---
-sidebar_position: 1
+slug: writing-codemods-like-a-pro
+title: Writing Codemods Like A Pro
+authors: [mohab]
+tags: [codemods, tutorial, advanced]
 ---
 
 import Tabs from '@theme/Tabs';
@@ -7,17 +10,19 @@ import TabItem from '@theme/TabItem';
 
 # Advanced Codemod Development
 
-Coding codemods with imperative methods and engines (like JSCodeShift for JS/TS) can be extremely powerful for code refactors. However, such codemods can be difficult to create, especially by a starter codemod developer.
+Coding codemods with imperative methods (like JSCodeShift for JS/TS) can be extremely powerful for code transformation. However, such codemods can be difficult to create, especially by a starter codemod developer.
 
 In this tutorial, we start taking the first steps towards writing codemods that solve real problems.
 
+<!--truncate-->
+ ---
+
 ## Overview
 
-Throughout this document, we will break down some of the thought process that our friend and codemod guru [Raja](https://github.com/rajasegar) uses to make useful codemods.
+Throughout this document, we will break down some of the thought process a codemod guru, like Christoph Nakazawa (https://github.com/cpojer), uses to make useful codemods.
 
 By the end of this tutorial you will learn:
 
-- How to start tackling codemod development like an expert.
 - How to write a codemod that solves a real-world problem.
 - Usage of more advanced AST manipulation techniques.
 - About new methods and tools that make your codemod development more efficient.
@@ -26,7 +31,9 @@ Lets learn by example together!
 
 :::tip
 
-*We suggest you follow this tutorial using [ASTExplorer](https://astexplorer.net/) w/ JSCodeShift.*
+*We suggest you follow this tutorial using ASTExplorer w/ JSCodeShift.*
+
+
 
 :::
 
@@ -45,9 +52,15 @@ Before getting into this tutorial, make sure you're familiar with writing simple
 
 ## Scenario
 
+Before the emergence of ES6, JS codebases heavily relief on `var` for variable declarations.
+
+Due to the issues with `var`'s scope issues, `let` and `const` declarations where introduced to put an end to the shortcomings of `var`.
+
+However, even after the introduction of `let` and `const`, there are still a lot of codebases that haven't been migrated to use the new declaration types. Refactoring those codebases can be a tiresome process. To add, resorting to search-and-replace methods aren't applicable in this scenario, as there are edge cases (which we discuss below) that aren't possible to cover with mere find-and-replace operations.
+
 In this example, we will take a look at the JS Codemod [`no-vars`](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js).
 
-The `no-vars` codemod, converts all occurrences of `var` and `let` declarations to `const` declarations.
+The `no-vars` codemod, has been developed to automatically refactor codebases to use `const` and `let` declarations instead of `var` wherever possible.
 
 <div class="flex-row">
 
@@ -72,7 +85,7 @@ const exampleVariable = "hello world";
 </div>
 </div>
 
-### Considerations
+### Considering Code Variety & Edge Cases
 
 If you are new to codemod development, you might get tricked into thinking that developing a transformation for this scenario is simpler than it is.
 
@@ -83,18 +96,12 @@ One might think that it is safe to simply:
 
 However, this would probably lead to breaking your code in most cases.
 
-The first shift in thought process to becoming a codemod pro is realizing that ***codemod design is a very delicate process***.
-
-A codemod pro's thought process would usually be very careful before having any assumptions about code.
+A codemod pro's thought process would usually be very careful before having any assumptions about code. That's why you should always consider all possible varieties & edge cases of the code pattern for your use case.
 
 
-### Your First Steps To Being a Codemod Pro (Thinking 10 Steps Ahead)
+### Planning a Solution to Handle Code Variety & Edge Cases
 
 If you take a closer look, you'd start noticing a lot of possible problems with simply replacing each `var` with `const`.
-
-Consider scenarios where the variable declaration kind is in fact `var`, but the variable is either:
-- An loop's index declaration.
-- A mutated variable.
 
 ```js
 for (var i = 0; i < 5; i++) { // Replacing var with const here would cause faulty code
@@ -107,13 +114,20 @@ var hello = "hello world"; // Replacing var here breaks the code as the hello va
 hello = "hello universe";
 ```
 
-A more experienced codemod developer would consider such cases and think about:
-- Replacing var declarations that are mutated with const.
-- Avoid replacing for loop declarations with const (except For...of/in loops).
-- Using `let` as a fallback for `var` declarations in such cases.
+Simply replacing all var instances with const would break the code if:
 
-With that in mind, now let's take a look at a step-by-step process of how the codemod pro [Christoph Nakazawa](https://github.com/cpojer) tackles those cases in his [`no-vars`](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js) transform.
+- `var` is a loop index declaration
+- `var` is a mutated variable
 
+Therefore we should avoid replacing such declarations with const and implement fallbacks for such cases.
+
+A better approach in such case would be:
+
+- Transform such instances of `var` where we can’t use const to `let`.
+- Transform all other `var` instances safely into `const`.
+
+
+With that in mind, now let's take a look at a step-by-step process of how the codemod pro [Christoph Nakazawa](https://github.com/cpojer) tackles those cases in his [no-vars](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js) transform.
 
 ---
 
@@ -524,4 +538,4 @@ for (const x in text) {
 ### Next Steps
 After taking your first steps with writing your first codemod that solves a real-world problem, now you're ready to start taking your development process to the next level.
 
-In the upcoming tutorial, we will cover integrating declarative codemod engines (like [JARVIS](https://rajasegar.github.io/jarvis/)) into your workflow, making you a much more efficient codemod developer. [Let's get started!](docs/guides/declarative-codemod-engines)
+In the upcoming tutorial, we will cover integrating declarative codemod engines (like [JARVIS](https://rajasegar.github.io/jarvis/)) into your workflow, making you a much more efficient codemod developer. [Let's get started!](/blog/declarative-codemod-engines)
