@@ -1,6 +1,6 @@
 ---
 slug: what-are-codemods
-title: What Are Codemods? - Deciphered
+title: What Are Codemods, Deciphered
 authors: [mohab]
 tags: [codemods, tutorial, beginner]
 image: ./what-are-codemods-header.png
