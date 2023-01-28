@@ -19,7 +19,7 @@ In this tutorial, we start taking the first steps towards writing codemods that 
 
 ## Overview
 
-Throughout this document, we will break down some of the thought process a codemod guru, like Christoph Nakazawa (https://github.com/cpojer), uses to make useful codemods.
+Throughout this document, we will break down some of the thought process a codemod guru, like [Christoph Nakazawa](https://github.com/cpojer), uses to make useful codemods.
 
 By the end of this tutorial you will learn:
 
@@ -29,14 +29,6 @@ By the end of this tutorial you will learn:
 
 Lets learn by example together!
 
-:::tip
-
-*We suggest you follow this tutorial using ASTExplorer w/ JSCodeShift.*
-
-
-
-:::
-
 ---
 
 ## Prerequisites
@@ -45,7 +37,7 @@ Lets learn by example together!
 This tutorial requires understanding of Abstract Syntax Trees (ASTs). You should be able to inspect, traverse, & manipulate ASTs. If you're not familiar with ASTs, make sure to check out [our guide on understanding ASTs first](#).
 
 ### Writing simple codemods
-Before getting into this tutorial, make sure you're familiar with writing simple codemods. If you're not, make sure to go over [our tutorial for writing your first codemod](#), first.
+Before getting into this tutorial, make sure you're familiar with writing simple codemods. If you're not, go over [our tutorial for writing your first codemod](#).
 
 ---
 
@@ -101,7 +93,13 @@ A codemod pro's thought process would usually be very careful before having any 
 
 ### Planning a Solution to Handle Code Variety & Edge Cases
 
-If you take a closer look, you'd start noticing a lot of possible problems with simply replacing each `var` with `const`.
+To start handling code variety & edge cases, let's briefly note the possible cases where a `var` might be declared:
+- `var` is declared and not mutated
+- `var` is declared and mutated
+- `var` is declared and initialized as a loop index
+- `var` is declared inside a loop
+
+If you take a closer look, you'd start noticing a lot of possible problems with simply replacing each `var` with `const`, as the use of `const` in some of the previously stated cases would break our code.
 
 ```js
 for (var i = 0; i < 5; i++) { // Replacing var with const here would cause faulty code
@@ -118,6 +116,7 @@ Simply replacing all var instances with const would break the code if:
 
 - `var` is a loop index declaration
 - `var` is a mutated variable
+- `var` is declared or initialized within a loop
 
 Therefore we should avoid replacing such declarations with const and implement fallbacks for such cases.
 
@@ -133,8 +132,18 @@ With that in mind, now let's take a look at a step-by-step process of how the co
 
 ## Developing the Codemod
 
+To get starting with making our codemod, let's start by opening up [ASTExplorer](https://astexplorer.net/). ASTExplorer is a tool used to write and test codemods online using different codemod engines.
+
 
 ### Example Input
+
+To start developing our codemod, let's consider this example input code which has an instance of:
+- A non-mutated `var`
+- A mutated `var`
+- A `var` used for loop index declaration
+- A `var` declared inside a loop
+
+We'll use each of those cases to cover the possible edge cases that can occur; thereby, verifying if our codemod passes the possible code varieties.
 
 ```js
 var notMutatedVar = "definitely not mutated";
@@ -150,6 +159,9 @@ for (var x in text) {
 }
 ```
 ### Required Output
+
+For reference, here is our end goal. We can verify if our codemod is correct if it can transform the previous input code to the required output illustrated below.
+
 ```js
 const notMutatedVar = "definitely not mutated";
 let mutatedVar = "yep, i'm mutated";
@@ -165,6 +177,8 @@ for (const x in text) {
 ```
 
 ### The Transform
+
+With that being said, here is the transform that a pro like [Christoph Nakazawa](https://github.com/cpojer) wrote to solve this challenge.
 
 <Tabs>
 <TabItem value="transform" label="The Transform" default>
@@ -439,7 +453,7 @@ export default function transformer(file, api, options) {
 
 
 ### Breaking it Down
-Now let's break down you you build such a transform.
+Now let's break down the thought process of building such a transform.
 
 
 #### Getting Declarations
