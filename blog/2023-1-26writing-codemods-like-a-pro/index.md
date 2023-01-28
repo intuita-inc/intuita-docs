@@ -8,47 +8,45 @@ tags: [codemods, tutorial, advanced]
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Advanced Codemod Development
+# Writing Codemods Like a Pro
 
-Coding codemods with imperative methods (like JSCodeShift for JS/TS) can be extremely powerful for code transformation. However, such codemods can be difficult to create, especially by a starter codemod developer.
+Writing codemods using imperative methods (like JSCodeShift for JS/TS) can be extremely powerful for code transformation. However, such codemods can be difficult to create, especially by new codemod authors.
 
-In this tutorial, we start taking the first steps towards writing codemods that solve real problems.
+In this article, we'll take what we've learned about ASTs and building simple codemods to tackle a real-world problem.
 
 <!--truncate-->
+
  ---
+
+
+## Prerequisites
+
+- **Understanding ASTs -** This article requires a basic understanding of how to inspect, traverse, and manipulate ASTs. If you need a refresher, check out [our guide on understanding ASTs](#).
+- **Basic Understanding of Codemods -** This article requires a basic understanding of writing simple codemods. If you're unfamiliar with writing codemods, check out [our tutorial on writing your first codemod](#).
+
 
 ## Overview
 
 Throughout this document, we will break down some of the thought process a codemod guru, like [Christoph Nakazawa](https://github.com/cpojer), uses to make useful codemods.
 
-By the end of this tutorial you will learn:
+By the end of this tutorial, you will learn:
 
 - How to write a codemod that solves a real-world problem.
 - Usage of more advanced AST manipulation techniques.
-- About new methods and tools that make your codemod development more efficient.
+- New methods and tools that make your codemod development more efficient.
 
-Lets learn by example together!
+Let's learn by example together!
 
----
 
-## Prerequisites
-
-### Understanding ASTs
-This tutorial requires understanding of Abstract Syntax Trees (ASTs). You should be able to inspect, traverse, & manipulate ASTs. If you're not familiar with ASTs, make sure to check out [our guide on understanding ASTs first](#).
-
-### Writing simple codemods
-Before getting into this tutorial, make sure you're familiar with writing simple codemods. If you're not, go over [our tutorial for writing your first codemod](#).
-
----
 
 
 ## Scenario
 
-Before the emergence of ES6, JS codebases heavily relief on `var` for variable declarations.
+Before the emergence of ES6, JS codebases heavily relied on `var` for variable declarations.
 
-Due to the issues with `var`'s scope issues, `let` and `const` declarations where introduced to put an end to the shortcomings of `var`.
+Due to the issues with `var`'s scope issues, `let` and `const` declarations were introduced to put an end to the shortcomings of `var`.
 
-However, even after the introduction of `let` and `const`, there are still a lot of codebases that haven't been migrated to use the new declaration types. Refactoring those codebases can be a tiresome process. To add, resorting to search-and-replace methods aren't applicable in this scenario, as there are edge cases (which we discuss below) that aren't possible to cover with mere find-and-replace operations.
+However, even after the introduction of `let` and `const`, there are still a lot of codebases that haven't been migrated to use the new declaration types. Refactoring those codebases can be a tedious process. To add, resorting to search-and-replace methods aren't applicable in this scenario, as there are edge cases (which we discuss below) that aren't possible to cover with mere find-and-replace operations.
 
 In this example, we will take a look at the JS Codemod [`no-vars`](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js).
 
@@ -88,12 +86,12 @@ One might think that it is safe to simply:
 
 However, this would probably lead to breaking your code in most cases.
 
-A codemod pro's thought process would usually be very careful before having any assumptions about code. That's why you should always consider all possible varieties & edge cases of the code pattern for your use case.
+A codemod pro adopts a thought process that is very careful with having any assumptions about code. That's why you should always consider all possible varieties and edge cases of the code pattern for your use case.
 
 
 ### Planning a Solution to Handle Code Variety & Edge Cases
 
-To start handling code variety & edge cases, let's briefly note the possible cases where a `var` might be declared:
+To start handling code variety and edge cases, let's briefly note the possible cases where a `var` might be declared:
 - `var` is declared and not mutated
 - `var` is declared and mutated
 - `var` is declared and initialized as a loop index
@@ -120,10 +118,10 @@ Simply replacing all var instances with const would break the code if:
 
 Therefore we should avoid replacing such declarations with const and implement fallbacks for such cases.
 
-A better approach in such case would be:
+So, our approach should be:
 
-- Transform such instances of `var` where we can’t use const to `let`.
-- Transform all other `var` instances safely into `const`.
+- In cases where we can't replace `var` with `const`, we should replace `var` with `let` as a fallback.
+- Safely transform all other occurrences of `var` into `const`.
 
 
 With that in mind, now let's take a look at a step-by-step process of how the codemod pro [Christoph Nakazawa](https://github.com/cpojer) tackles those cases in his [no-vars](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js) transform.
@@ -132,7 +130,9 @@ With that in mind, now let's take a look at a step-by-step process of how the co
 
 ## Developing the Codemod
 
-To get starting with making our codemod, let's start by opening up [ASTExplorer](https://astexplorer.net/). ASTExplorer is a tool used to write and test codemods online using different codemod engines.
+To get started with writing our codemod, let's start by opening up [ASTExplorer](https://astexplorer.net/).
+
+To follow along, set your transform setting to `jscodeshift`. Your parser setting should then automatically change to `recast`.
 
 
 ### Example Input
@@ -207,7 +207,7 @@ const updatedAnything = root.find(j.VariableDeclaration).filter(
 
 </TabItem>
 
-<TabItem value="helper-functions" label="Helper Functions" default>
+<TabItem value="helper-functions" label="w/ Helper Functions" default>
 
 ```jsx  title="Code with Helper Functions"
 export const parser = 'babel'
@@ -467,23 +467,26 @@ const updatedAnything = root.find(j.VariableDeclaration).filter(
 
 #### Checking Declaration Parent
 
-Then we check if the var is inside a closure, declared twice, or is a function declaration which might be hoisted.
+Then we check if the `var` conforms to ***any*** of those cases:
+- `var` is inside a closure
+- `var` is declared twice
+- `var` is a function declaration that might be hoisted
 
-If any of those cases occur, we refrain from transforming the `var` declaration to `const`, rather we convert it to a `let` declaration.
+If any of those cases occur, we refrain from transforming the `var` declaration to `const`. Rather, we convert it to a `let` declaration.
 
 ```js
 .filter(declaration => {
     return declaration.value.declarations.every(declarator => {
       // checking if the var is inside a closure
-      // or declared twice or is a function declaration which might be hoisted
+      // or declared twice or is a function declaration that might be hoisted
       return !isTruelyVar(declaration, declarator);
     });
 ```
 
 #### Checking Parent Loops
-Then, we check if the `var` declaration is within either:
-- A For...of/in loop
-- If variable is mutated.
+Then, for each `var` inside a loop, we check if:
+- The `var` is declared as the iterable object of a For...of/in loop
+- If variable is mutated inside the loop.
 
 ```js
 .forEach(declaration => {
@@ -508,7 +511,7 @@ Then, we check if the `var` declaration is within either:
   }).size() !== 0;
 ```
 
-In the case of (1) the variable being mutated or (2) the declarator not being initialized and parent loop being a For...of/in loop, then we resort to replacing `var` with `let`.
+In the case of (1) the variable being mutated or (2) the declarator not being initialized and the parent loop being a For...of/in loop, then we resort to replacing `var` with `let`.
 
 Otherwise, we can safely replace `var` with `const`.
 
@@ -543,7 +546,6 @@ for (const x in text) {
 ```
 
 ### Takeaways
-- Being an experienced codemod developer requires careful thought while designing your codemod.
 - Always make sure you aren't making wishful assumptions in your codemod cases.
 - Design fallbacks for undesired scenarios within your codemods.
 - And most importantly, get active within the codemod community! At Intuita, we're keen on building a [community haven for all the codemod enthusiasts out there](https://github.com/intuita-inc).
@@ -552,4 +554,9 @@ for (const x in text) {
 ### Next Steps
 After taking your first steps with writing your first codemod that solves a real-world problem, now you're ready to start taking your development process to the next level.
 
-In the upcoming tutorial, we will cover integrating declarative codemod engines (like [JARVIS](https://rajasegar.github.io/jarvis/)) into your workflow, making you a much more efficient codemod developer. [Let's get started!](/blog/declarative-codemod-engines)
+In the upcoming tutorial, we will cover:
+- Integrating declarative codemod engines like [JARVIS](https://rajasegar.github.io/jarvis/) into your workflow.
+- Diversifying your codemod development toolset.
+- Writing tests for your codemods.
+
+[Let's get started! &rarr;](/blog/declarative-codemod-engines)
