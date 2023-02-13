@@ -83,10 +83,6 @@ const config = {
                 to: 'docs/category/getting-started',
               },
               {
-                label: 'Guides',
-                to: 'docs/category/guides',
-              },
-              {
                 label: 'Contributing',
                 to: 'docs/category/contributing',
               },
