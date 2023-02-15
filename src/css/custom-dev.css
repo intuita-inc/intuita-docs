@@ -15,7 +15,7 @@
   --ifm-navbar-background-color: var(--ifm-footer-background-color);
   --ifm-footer-padding-vertical: var(--ifm-spacing-vertical);
   --ifm-hr-background-color: var(--ifm-color-emphasis-200);
-  --docusaurus-highlighted-code-line-bg: rgb(225, 225, 225);
+  --docusaurus-highlighted-code-line-bg: #eaeaeac9;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -147,4 +147,17 @@ div[role="tabpanel"] {
   .flex-column {
     width: 100%;
   }
+}
+
+
+.max-width-300 {
+  max-width: 300px;
+}
+
+.max-width-400 {
+  max-width: 400px;
+}
+
+.inverted-grey {
+  -webkit-filter: invert(89.5%) !important
 }

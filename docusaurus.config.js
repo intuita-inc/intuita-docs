@@ -36,8 +36,6 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/intuita-inc/intuita-docs',
         },
         theme: {
           customCss: require.resolve('./src/css/custom-dev.css'),
@@ -62,12 +60,12 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          // {to: '/blog', label: 'Blog', position: 'left'},
-          // {
-          //   href: 'https://github.com/intuita-inc',
-          //   label: 'GitHub',
-          //   position: 'right',
-          // },
+          {to: '/blog', label: 'Blog', position: 'left'},
+          {
+            href: 'https://github.com/intuita-inc',
+            label: 'GitHub',
+            position: 'right',
+          },
         ],
       },
       footer: {
@@ -77,8 +75,20 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
+                label: 'Welcome',
+                to: 'docs/intro',
+              },
+              {
+                label: 'Getting Started',
+                to: 'docs/category/getting-started',
+              },
+              {
+                label: 'Contributing',
+                to: 'docs/category/contributing',
+              },
+              {
+                label: 'About',
+                to: 'docs/category/about-intuita',
               },
             ],
           },
@@ -114,6 +124,14 @@ const config = {
               {
                 label: 'Privacy Policy',
                 to: 'docs/about-intuita/legal/privacy-policy',
+              },
+              {
+                label: 'Terms & Conditions',
+                to: 'docs/about-intuita/legal/terms-and-conditions',
+              },
+              {
+                label: 'Telemetry Compliance',
+                to: 'docs/about-intuita/legal/telemetry-compliance',
               },
             ],
           },

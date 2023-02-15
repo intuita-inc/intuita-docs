@@ -121,7 +121,7 @@ export default function NavBack({ text, url }) {
 
 After comparing the changes made by Intuita, now you can look at each changes file and individually approve/dismiss the changed file.
 
-Alternatively, you can approve all types of changes by clicking on the change type (the magic want logo 🪄).
+Alternatively, you can approve all types of changes by clicking on the change type (the magic wand logo 🪄).
 
 <ThemedImage
   alt="Touca server signup page"
