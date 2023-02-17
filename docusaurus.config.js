@@ -52,6 +52,8 @@ const config = {
         logo: {
           alt: 'Intuita Logo',
           src: 'img/intuita-logo.png',
+          href: 'https://intuita.io',
+          target: '_self',
         },
         items: [
           {
