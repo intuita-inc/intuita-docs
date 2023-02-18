@@ -11,7 +11,7 @@ We are an early-stage startup passionate about building tools developers love an
 
 ## ❤ Our team
 
-Alex, Greg, Maryam, Mohsen
+Alex, Dmytro, Greg, Henok, Mohab, Maryam
 
 And you? We are growing & looking for solid engineers who are energetic, problem-solvers & delightful to work with.
 
