@@ -3,6 +3,9 @@ slug: writing-codemods-like-a-pro
 title: Writing Codemods Like A Pro
 authors: [mohab]
 tags: [codemods, tutorial, advanced]
+# Display h2 to h5 headings
+toc_min_heading_level: 2
+toc_max_heading_level: 3
 ---
 
 import Tabs from '@theme/Tabs';
@@ -21,7 +24,8 @@ In this article, we'll take what we've learned about ASTs and building simple co
 
 ## Prerequisites
 
-- **Understanding ASTs -** This article requires a basic understanding of how to inspect, traverse, and manipulate ASTs. If you need a refresher, check out [our guide on understanding ASTs](#).
+- **Understanding ASTs -** This article requires a basic understanding of how to inspect,
+traverse, and manipulate ASTs. If you need a refresher, check out [our guide on understanding ASTs](#).
 - **Basic Understanding of Codemods -** This article requires a basic understanding of writing simple codemods. If you're unfamiliar with writing codemods, check out [our tutorial on writing your first codemod](#).
 
 
@@ -40,7 +44,7 @@ Let's learn by example together!
 
 
 
-## Scenario
+## Problem
 
 Before the emergence of ES6, JS codebases heavily relied on `var` for variable declarations.
 
@@ -48,7 +52,7 @@ Due to the issues with `var`'s scope issues, `let` and `const` declarations were
 
 However, even after the introduction of `let` and `const`, there are still a lot of codebases that haven't been migrated to use the new declaration types. Refactoring those codebases can be a tedious process. To add, resorting to search-and-replace methods aren't applicable in this scenario, as there are edge cases (which we discuss below) that aren't possible to cover with mere find-and-replace operations.
 
-In this example, we will take a look at the JS Codemod [`no-vars`](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js).
+In this example, we will take a look at the codemod [`no-vars`](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js).
 
 The `no-vars` codemod, has been developed to automatically refactor codebases to use `const` and `let` declarations instead of `var` wherever possible.
 
@@ -75,110 +79,230 @@ const exampleVariable = "hello world";
 </div>
 </div>
 
-### Considering Code Variety & Edge Cases
+### Planning Our Codemod
 
 If you are new to codemod development, you might get tricked into thinking that developing a transformation for this scenario is simpler than it is.
 
 One might think that it is safe to simply:
+
 - Find all variable declarations.
 - Filter by variable declarations where `kind` is `var`.
 - Replace found declarations with `const`.
 
 However, this would probably lead to breaking your code in most cases.
 
+:::tip
 A codemod pro adopts a thought process that is very careful with having any assumptions about code. That's why you should always consider all possible varieties and edge cases of the code pattern for your use case.
+:::
 
+Let’s consider this sample code snippet which covers some of the possible cases of how a var might be declared.
 
-### Planning a Solution to Handle Code Variety & Edge Cases
-
-To start handling code variety and edge cases, let's briefly note the possible cases where a `var` might be declared:
-- `var` is declared and not mutated
-- `var` is declared and mutated
-- `var` is declared and initialized as a loop index
-- `var` is declared inside a loop
-
-If you take a closer look, you'd start noticing a lot of possible problems with simply replacing each `var` with `const`, as the use of `const` in some of the previously stated cases would break our code.
-
-```js
-for (var i = 0; i < 5; i++) { // Replacing var with const here would cause faulty code
-  // ...
-}
-```
-
-```js
-var hello = "hello world"; // Replacing var here breaks the code as the hello variable is mutated
-hello = "hello universe";
-```
-
-Simply replacing all var instances with const would break the code if:
-
-- `var` is a loop index declaration
-- `var` is a mutated variable
-- `var` is declared or initialized within a loop
-
-Therefore we should avoid replacing such declarations with const and implement fallbacks for such cases.
-
-So, our approach should be:
-
-- In cases where we can't replace `var` with `const`, we should replace `var` with `let` as a fallback.
-- Safely transform all other occurrences of `var` into `const`.
-
-
-With that in mind, now let's take a look at a step-by-step process of how the codemod pro [Christoph Nakazawa](https://github.com/cpojer) tackles those cases in his [no-vars](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js) transform.
-
----
-
-## Developing the Codemod
-
-To get started with writing our codemod, let's start by opening up [ASTExplorer](https://astexplorer.net/).
-
-To follow along, set your transform setting to `jscodeshift`. Your parser setting should then automatically change to `recast`.
-
-
-### Example Input
-
-To start developing our codemod, let's consider this example input code which has an instance of:
-- A non-mutated `var`
-- A mutated `var`
-- A `var` used for loop index declaration
-- A `var` declared inside a loop
-
-We'll use each of those cases to cover the possible edge cases that can occur; thereby, verifying if our codemod passes the possible code varieties.
-
-```js
+```jsx
 var notMutatedVar = "definitely not mutated";
 var mutatedVar = "yep, i'm mutated";
 
 for (var i = 0; i < 5; i++) {
   mutatedVar = "foo";
-  var anotherInsideLoopVar = "should i be changed?";
+	var anotherInsideLoopVar = "should i be changed?";
+}
+
+for (var xin text) {
+  text += x + " ";
+}
+```
+
+As we can see, this code covers the following cases:
+
+- `var` is declared and not mutated
+- `var` is declared and mutated
+- `var` is declared and initialized as a loop index
+- `var` is declared inside a loop
+
+Such cases can also be referred to as **patterns**.
+
+Now, take a moment to try to find out which cases would break the code if we were to transform `var` into `const` .
+
+Let’s see if you could point them all out. Here’s a brief summary of different occurring patterns and the corresponding safe transform we can apply for each one:
+
+| Pattern Description                                            | Sample Snippet Before Transformation                                                                   | The snippet after transformation                                                                                   |
+|----------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `var` is declared twice                                          | <code>var x; <br></br> <mark>var x</mark>;</code>                                                                                          | <code>var x; <br></br> <mark>var x</mark>;</code> <br></br> (unchanged)                                                                                          |
+| `var` is hoisted                                                 | <code>x = 5; <br></br> <mark>var x</mark>;</code>                                                                                          | <code>x = 5; <br></br> <mark>var x</mark>;</code> <br></br> (unchanged)                                                                                          |
+| `var` is declared in a loop and referenced inside a closure      | <code> for (var i = 0; i<5; i++){ <br></br> &nbsp; <mark>var a</mark> = "hello";  <br></br> &nbsp; function myFunction() {  <br></br> &nbsp; &nbsp; a = "world";   return a; <br></br> } } </code> | <code> for (var i = 0; i<5; i++){ <br></br> &nbsp; <mark>var a</mark> = "hello";  <br></br> &nbsp; function myFunction() {  <br></br> &nbsp; &nbsp; a = "world";   return a; <br></br> } } </code> <br></br> (unchanged) |
+| `var` is a loop index declaration                                | <code>for (<mark>var i</mark> = 0; i < 5; i++)</code>                                                                            | <code>for (<mark>let i</mark> = 0; i < 5; i++)</code>                                                                                        |
+| `var` is a mutated variable                                      | <code><mark>var x</mark> = 1; <br></br> x = 2;</code>                                                                                      | <code><mark>let x</mark> = 1; <br></br> x = 2;</code>                                                                                                  |
+| `var` is in a loop and mutated                                   | <code>for (var i = 0; i < 5; i++) { <br></br> &nbsp; <mark>var x</mark> = "foo"; <br></br> &nbsp; x = “bar”; <br></br> }</code>                                          | <code>for (let i = 0; i < 5; i++) { <br></br> &nbsp; <mark>let x</mark> = "foo"; <br></br> &nbsp; x = “bar”; <br></br> }</code>                                                      |
+| all other occurrences of `var` (global or local non-mutated `var`) | <code><mark>var x</mark> = “foo”;</code>                                                                                         | <code><mark>const x</mark> = “foo”;</code>                                                                                                   |
+
+
+
+Now that we have a concrete list of possible patterns and their corresponding suitable actions, let's prepare a test case to validate if the codemod we write successfully satisfies our plan.
+
+### Before:
+
+```jsx
+var notMutatedVar = "definitely not mutated";
+var mutatedVar = "yep, i'm mutated";
+
+for (var i = 0; i < 5; i++) {
+  mutatedVar = "foo";
+	var anotherInsideLoopVar = "should i be changed?";
 }
 
 for (var x in text) {
   text += x + " ";
 }
+
 ```
-### Required Output
 
-For reference, here is our end goal. We can verify if our codemod is correct if it can transform the previous input code to the required output illustrated below.
+### After:
 
-```js
+```jsx
 const notMutatedVar = "definitely not mutated";
 let mutatedVar = "yep, i'm mutated";
 
 for (let i = 0; i < 5; i++) {
   mutatedVar = "foo";
-  const anotherInsideLoopVar = "should i be changed?";
+	const anotherInsideLoopVar = "should i be changed?";
 }
 
 for (const x in text) {
   text += x + " ";
 }
+
 ```
 
-### The Transform
+We can verify if our codemod is correct if it can transform the previous “Before” state of the code to the “After” state illustrated above.
 
-With that being said, here is the transform that a pro like [Christoph Nakazawa](https://github.com/cpojer) wrote to solve this challenge.
+With this plan in mind, let's take a look at a step-by-step process of how the codemod pro [Christoph Nakazawa](https://github.com/cpojer) puts it into action in his [no-vars](https://github.com/cpojer/js-codemod/blob/master/transforms/no-vars.js) transform.
+
+
+## Developing the Codemod
+
+Now that we’ve done the prep work in the previous section, we can confidently start writing our codemod.
+
+Our workflow for writing the codemod will be as follows:
+
+1. Finding nodes
+2. Filtering based on target patterns
+3. Transforming nodes
+
+To get started with writing our codemod, let's start by opening up [ASTExplorer](https://astexplorer.net/).
+
+To follow along, set your transform setting to `jscodeshift`. Your parser setting should then automatically change to `recast`.
+
+Now that your environment is set up, let's start following our workflow.
+
+### #1 Finding Nodes
+
+Firstly, we get all the `var` declaration nodes.
+
+At this stage, we want to find all variable declarations. To do this, we use JSCodeshift’s find method, while passing `j.VariableDeclaration` as a parameter.
+
+<pre><code>
+const updatedAnything = root.<span class="green-highlight-span">find(j.VariableDeclaration)</span>
+</code></pre>
+
+
+
+
+### #2 Filtering
+
+Now that we’ve captured all variable declarations, we can now start filtering them based on the patterns we’ve identified while [planning our codemod](#planning-our-codemod).
+
+In the previous step, we’ve targeted all variable declarations, which includes `var` , `let` , and `const` declarations. So, let’s first start filtering for `var` declarations only.
+
+We do this by using JSCodeshift’s `filter` method as shown below:
+
+```jsx
+const updatedAnything = root.find(j.VariableDeclaration).filter(
+  //green line
+  dec => dec.value.kind === 'var'   // getting all var declarations
+)
+```
+
+
+Now that we’re targeting only `var` declarations, let’s rule out all `var` declarations that we cannot transform into `let` or `const`.
+
+To do so, we will call a second filter which calls the custom helper function `isTruelyVar` . This filter checks for every `var` if it conforms to ***any*** of such cases:
+
+- `var` is declared in a loop and referenced inside a closure
+- `var` is declared twice
+- `var` is hoisted
+
+If any of those cases occur, we refrain from transforming the `var` declaration at all. Rather, we fall back to a `var` declaration.
+
+```jsx
+.filter(declaration => {
+    return declaration.value.declarations.every(declarator => {
+      // checking if the var is inside a closure
+      // or declared twice or is a function declaration that might be hoisted
+      // green line
+      return !isTruelyVar(declaration, declarator);
+    });
+```
+
+
+After ruling out all non-transformable `var` occurrences, we can now apply the final filter to determine whether the remaining `var` occurrences will be transformed into `let` or `const` .
+
+To do so, for each `var` inside a loop, we check if:
+
+- The `var` is declared as the iterable object of a For...of/in loop
+- If variable is mutated inside the loop.
+
+```jsx
+.forEach(declaration => {
+    // True if parent path is either a For...of or in loop
+    const forLoopWithoutInit = isForLoopDeclarationWithoutInit(declaration);
+    if (
+      declaration.value.declarations.some(declarator => {
+        // If declarator is not initialized and parent loop is initialized
+        // or
+        // If var is mutated
+        return (!declarator.init && !forLoopWithoutInit) || isMutated(declaration, declarator);
+      })
+    )
+```
+
+This filter allows us to pinpoint 2 possible cases:
+
+1. Variable is mutated
+2. Variable is not initialized and the parent loop is a For...of/in loop
+
+### #3 Transforming the Nodes
+
+With the 2 possible cases that we’ve identified, now we can determine whether we will transform the `var` into either a `let` or `const` declaration
+
+In the case of occurrence of either of case (1) or (2), we resort to replacing `var` with `let`.
+
+Otherwise, we can safely replace `var` with `const`.
+
+```jsx
+.forEach(declaration => {
+    // True if parent path is either a For...of or in loop
+    const forLoopWithoutInit = isForLoopDeclarationWithoutInit(declaration);
+    if ( declaration.value.declarations.some(declarator => {
+        // If declarator is not initialized and parent loop is initialized
+        // or
+        // If var is mutated
+        return (!declarator.init && !forLoopWithoutInit) || isMutated(declaration, declarator);
+      })) {
+        // In either one of the previous cases, we fall back to using let instead of const
+        //green line
+        declaration.value.kind = 'let';
+    } else {
+        // Else, var is safe to be converted to const
+        //green line
+        declaration.value.kind = 'const';
+        }
+  }).size() !== 0;
+  //replacing the source AST with the manipulated AST after applying our transforms
+  //green line
+  return updatedAnything ? root.toSource() :null; 
+```
+
+
+Finally ending up with the following transform:
 
 <Tabs>
 <TabItem value="transform" label="The Transform" default>
@@ -452,111 +576,45 @@ export default function transformer(file, api, options) {
 
 
 
-### Breaking it Down
-Now let's break down the thought process of building such a transform.
+> Note here that while writing codemods, we should always consider having 
+fallbacks for undesirable cases. The codemod developer here chose `let` as a fallback when `const` is not applicable, rather than keeping the declaration as `var`, as the use of `let` is arguably better.
+>
 
-
-#### Getting Declarations
-Firstly, we get all the `var` declarations.
-
-```js
-const updatedAnything = root.find(j.VariableDeclaration).filter(
-    dec => dec.value.kind === 'var'    // getting all var declarations
-  )
-```
-
-#### Checking Declaration Parent
-
-Then we check if the `var` conforms to ***any*** of those cases:
-- `var` is inside a closure
-- `var` is declared twice
-- `var` is a function declaration that might be hoisted
-
-If any of those cases occur, we refrain from transforming the `var` declaration to `const`. Rather, we convert it to a `let` declaration.
-
-```js
-.filter(declaration => {
-    return declaration.value.declarations.every(declarator => {
-      // checking if the var is inside a closure
-      // or declared twice or is a function declaration that might be hoisted
-      return !isTruelyVar(declaration, declarator);
-    });
-```
-
-#### Checking Parent Loops
-Then, for each `var` inside a loop, we check if:
-- The `var` is declared as the iterable object of a For...of/in loop
-- If variable is mutated inside the loop.
-
-```js
-.forEach(declaration => {
-    // True if parent path is either a For...of or in loop
-    const forLoopWithoutInit = isForLoopDeclarationWithoutInit(declaration);
-    if (
-      declaration.value.declarations.some(declarator => {
-        // If declarator is not initialized and parent loop is initialized
-        // or
-        // If var is mutated
-        return (!declarator.init && !forLoopWithoutInit) || isMutated(declaration, declarator);
-      })
-    ) {
-        // In either one of the previous cases, we fall back to using let instead of const
-        // This transforms the declaration type to let
-      declaration.value.kind = 'let';
-    } else {
-        // Else, var is safe to be converted to const
-        // This transforms the declaration type to const
-      declaration.value.kind = 'const';
-    }
-  }).size() !== 0;
-```
-
-In the case of (1) the variable being mutated or (2) the declarator not being initialized and the parent loop being a For...of/in loop, then we resort to replacing `var` with `let`.
-
-Otherwise, we can safely replace `var` with `const`.
-
-> Note here that while making this codemod, we should always consider having fallbacks for undesirable cases. The codemod developer here chose `let` as a fallback when `const` is not applicable, rather than keeping the declaration as `var`, as the use of `let` is arguably better.
-
-#### Returning the Manipulated AST
-Finally, we replace the source AST with the manipulated AST after applying our transforms.
-
-```js
-return updatedAnything ? root.toSource() : null;
-```
-
-
----
 
 ## Wrapping Up
 
 After applying this transform, we successfully get our desired code output.
 
-```js
+```jsx
 const notMutatedVar = "definitely not mutated";
 let mutatedVar = "yep, i'm mutated";
 
 for (let i = 0; i < 5; i++) {
   mutatedVar = "foo";
-  const anotherInsideLoopVar = "should i be changed?";
+const anotherInsideLoopVar = "should i be changed?";
 }
 
-for (const x in text) {
+for (const xin text) {
   text += x + " ";
 }
+
 ```
 
 ### Takeaways
-- Always make sure you aren't making wishful assumptions in your codemod cases.
-- Design fallbacks for undesired scenarios within your codemods.
-- And most importantly, get active within the codemod community! At Intuita, we're keen on building a [community haven for all the codemod enthusiasts out there](https://github.com/intuita-inc).
 
+- **Plan First -** Always methodically find and capture as many possible code patterns as you can before writing your codemod. Your plan can be the basis of your test file from patterns that should and should not be detected.
+- **Keeping Edge Cases in Mind -** While capturing possible code patterns, make sure to constantly look for potential edge cases that might arise. You can do so by brainstorming possible scenarios or by running your codemod over diverse code snippets and looking for potential errors.
+- **Follow Your Plan -** While writing the codemod, make sure to always refer back to your plan and satisfy all the possible patterns. It’s good practice to always make use of your test files during development to make your process more efficient.
+- **Learn From the Community -** Get active within the codemod community! At Intuita, we're keen on building a [community haven for all the codemod enthusiasts out there](https://github.com/intuita-inc).
 
 ### Next Steps
+
 After taking your first steps with writing your first codemod that solves a real-world problem, now you're ready to start taking your development process to the next level.
 
 In the upcoming tutorial, we will cover:
-- Integrating declarative codemod engines like [JARVIS](https://rajasegar.github.io/jarvis/) into your workflow.
-- Diversifying your codemod development toolset.
-- Writing tests for your codemods.
 
-[Let's get started! &rarr;](/blog/declarative-codemod-engines)
+- Integrating declarative codemod engines, like [Intuita’s Codemod Studio](https://codemod.studio), into your workflow.
+- Writing tests for your codemods.
+- Adding your codemods to Intuita’s codemod registry.
+
+[Let's get started! →](http://localhost:3000/blog/declarative-codemod-engines)

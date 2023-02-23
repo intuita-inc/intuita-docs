@@ -103,6 +103,10 @@ div[role="tabpanel"] {
   background: var(--ifm-menu-link-sublist-icon) 50% / 1.25rem 1.25rem;
 }
 
+.green-highlight-span {
+  background-color: #1fb90044;
+}
+
 .code-block-red-line {
   background-color: #ff000020;
   display: block;
