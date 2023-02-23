@@ -585,7 +585,7 @@ fallbacks for undesirable cases. The codemod developer here chose `let` as a fal
 
 After applying this transform, we successfully get our desired code output.
 
-```
+```jsx
 const notMutatedVar = "definitely not mutated";
 let mutatedVar = "yep, i'm mutated";
 
