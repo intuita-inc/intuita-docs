@@ -156,6 +156,11 @@ const config = {
             block: {start: 'highlight-start', end: 'highlight-end'},
           },
           {
+            className: 'code-block-yellow-line',
+            line: 'yellow line',
+            block: {start: 'highlight-start', end: 'highlight-end'},
+          },
+          {
             className: 'code-block-red-line',
             line: 'red line',
             block: {start: 'red start', end: 'red end'},
