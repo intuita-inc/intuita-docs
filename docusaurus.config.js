@@ -146,9 +146,9 @@ const config = {
         respectPrefersColorScheme: true,
       },
       prism: {
-        //theme: lightCodeTheme,
+        theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        theme: require('prism-react-renderer/themes/dracula'),
+        //theme: require('prism-react-renderer/themes/dracula'),
         magicComments: [
           {
             className: 'theme-code-block-highlighted-line',

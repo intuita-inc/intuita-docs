@@ -15,7 +15,7 @@
   --ifm-navbar-background-color: var(--ifm-footer-background-color);
   --ifm-footer-padding-vertical: var(--ifm-spacing-vertical);
   --ifm-hr-background-color: var(--ifm-color-emphasis-200);
-  --docusaurus-highlighted-code-line-bg: #eaeaeac9;
+  --docusaurus-highlighted-code-line-bg: #fffb13a8;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -27,7 +27,7 @@
   --ifm-color-primary-light: #38bdf8;
   --ifm-color-primary-lighter: #7dd3fc;
   --ifm-color-primary-lightest: #bae6fd;
-  --docusaurus-highlighted-code-line-bg: rgb(100, 100, 100);
+  --docusaurus-highlighted-code-line-bg: rgba(100, 100, 100, 0.5);
 }
 
 .navbar__logo {
