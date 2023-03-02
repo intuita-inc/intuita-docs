@@ -18,6 +18,8 @@ In this tutorial, we take it one step further by writing test cases that confirm
 
 Keep reading to add this skill to your arsenal.
 
+<!--truncate-->
+
 ---
 
 ## Prerequisites
