@@ -2,7 +2,7 @@
 slug: adding-codemods-to-registry
 title: Adding Codemods To Intuita’s Codemod Registry
 authors: [mohab]
-tags: [codemods, tutorial, advanced]
+tags: [codemods, tutorial]
 # Display h2 to h5 headings
 toc_min_heading_level: 2
 toc_max_heading_level: 3
